@@ -9,12 +9,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppFullScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SchemaActivity"
+            android:label="@string/schema_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.narogah.bbqbar.MainActivity" />
+        </activity>
+        <activity
+            android:name=".BookingActivity"
+            android:label="@string/booking_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.narogah.bbqbar.SchemaActivity" />
         </activity>
     </application>
 
