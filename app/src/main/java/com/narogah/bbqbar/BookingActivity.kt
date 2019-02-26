@@ -16,6 +16,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_booking.*
 
 import org.json.JSONArray
 import org.json.JSONException
@@ -90,7 +91,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     internal lateinit var adapter: ScheduleAdapter
     internal lateinit var loaderManager: LoaderManager
     internal lateinit var progress: View
-    internal lateinit var bookTable: Button
+    //internal lateinit var bookTable: Button
     internal lateinit var nameInput: EditText
     internal lateinit var phoneInput: EditText
     internal lateinit var commentInput: EditText
@@ -199,7 +200,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         bookTimeBegin = findViewById(R.id.book_time_begin_select)
         bookTimeEnd = findViewById(R.id.book_time_end_select)
         progress = findViewById(R.id.progress)
-        bookTable = findViewById(R.id.book_button)
+        //bookTable = findViewById(R.id.book_button)
         nameInput = findViewById(R.id.name_input)
         phoneInput = findViewById(R.id.phone_input)
         commentInput = findViewById(R.id.comment_input)
@@ -208,7 +209,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         loaderManager = supportLoaderManager
 
         currentDateTime.setOnClickListener(clickListener)
-        bookTable.setOnClickListener(clickListener)
+        book_button.setOnClickListener(clickListener)
         bookTimeBegin.onItemSelectedListener = itemSelectedListener
         bookTimeEnd.onItemSelectedListener = itemSelectedListener
 

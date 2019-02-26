@@ -12,7 +12,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppFullScreenTheme">
+            android:theme="@style/AppFullScreenTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,14 +22,16 @@
         </activity>
         <activity
             android:name=".SchemaActivity"
-            android:label="@string/schema_title">
+            android:label="@string/schema_title"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.narogah.bbqbar.MainActivity" />
         </activity>
         <activity
             android:name=".BookingActivity"
-            android:label="@string/booking_title">
+            android:label="@string/booking_title"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.narogah.bbqbar.SchemaActivity" />
