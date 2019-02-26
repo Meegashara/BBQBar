@@ -88,6 +88,7 @@
 
     <TextView
         android:id="@+id/date_select"
+        android:background="@drawable/border"
         android:layout_width="171dp"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -98,7 +99,7 @@
         android:gravity="center"
         android:hint="Выберите дату"
         android:textColorHint="@android:color/white"
-        android:textSize="24dp"
+        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.92"
