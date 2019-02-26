@@ -13,4 +13,5 @@
     <string name="comment">Комментарий (Необязательно)</string>
     <string name="book">Забронировать</string>
     <string name="book_for">Забронировать на:</string>
+    <string name="no_internet_connection">Нету доступа к сети</string>
 </resources>
