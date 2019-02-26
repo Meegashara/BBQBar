@@ -13,9 +13,6 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_booking.*
@@ -43,17 +40,17 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Число дней для брони вперед
      */
-    internal val DAYS_FOR_BOOK_OFFSET = 14
+    private val DAYS_FOR_BOOK_OFFSET = 14
 
     /**
      * Строка для гет запроса (получение данных с сервера)
      */
-    internal val GET_BASE_REQUEST = "http://4705e4cc-0c18-48f2-8a15-aa268109900f.mock.pstmn.io/?idTable=%d&date=%s"
+    private val GET_BASE_REQUEST = "http://4705e4cc-0c18-48f2-8a15-aa268109900f.mock.pstmn.io/?idTable=%d&date=%s"
 
     /**
      * Строка для пост запроса (отпрвка данных на сервер)
      */
-    internal val POST_BASE_REQUEST = ""
+    private val POST_BASE_REQUEST = ""
 
     /**
      * Дата для гет запроса
@@ -63,7 +60,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Номер столика, принимается с прошлой активити
      */
-    internal var tableID = 0
+    private var tableID = 0
 
     /**
      * Введенное имя
@@ -76,30 +73,22 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Введенный коммент
      */
-    internal var comment: String = ""
+    private var comment: String = ""
 
     /**
      * Идентификатор лоадера расписания
      */
-    internal val SCHEDULE_LOADER_ID = 1
-    internal var dateAndTime = Calendar.getInstance()
-    internal lateinit var currentDateTime: TextView
-    internal lateinit var dpDialog: DatePickerDialog
-    internal lateinit var bookTimeBegin: Spinner
-    internal lateinit var bookTimeEnd: Spinner
-    internal lateinit var adapter: ScheduleAdapter
-    internal lateinit var loaderManager: LoaderManager
-    internal lateinit var progress: View
-    //internal lateinit var bookTable: Button
-    internal lateinit var nameInput: EditText
-    internal lateinit var phoneInput: EditText
-    internal lateinit var commentInput: EditText
+    private val SCHEDULE_LOADER_ID = 1
+    private var dateAndTime = Calendar.getInstance()
+    private lateinit var dpDialog: DatePickerDialog
+    private lateinit var adapter: ScheduleAdapter
+    private lateinit var loaderManager: LoaderManager
 
 
     /**
      * Обработчик нажатий на элементы интерфейса
      */
-    internal var clickListener: View.OnClickListener = View.OnClickListener { v ->
+    private var clickListener: View.OnClickListener = View.OnClickListener { v ->
         when (v.id) {
             R.id.date_select //Поле выбора даты
             -> setDate()
@@ -111,7 +100,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Установка обработчика выбора даты
      */
-    internal var dateSetListener: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+    private var dateSetListener: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
         dateAndTime.set(Calendar.YEAR, year)
         dateAndTime.set(Calendar.MONTH, monthOfYear)
         dateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -123,7 +112,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Обработчик выбора элементов в выпадающих списках
      */
-    internal var itemSelectedListener: OnItemSelectedListener = object : OnItemSelectedListener {
+    private var itemSelectedListener: OnItemSelectedListener = object : OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
             when (parent.id) {
                 // Спиннер "От"
@@ -145,8 +134,10 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking)
 
-        val extras: Bundle = intent.extras
-        tableID = extras.getInt("id")
+        val extras: Bundle? = intent.extras
+        if (extras != null) {
+            tableID = extras.getInt("id")
+        }
 
         initialization()
         initDatePickerDialog()
@@ -176,7 +167,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      * Установка выбранной даты в поле и обновление параметра даты
      */
     private fun setInitialDateTime() {
-        currentDateTime.text = DateUtils.formatDateTime(this, dateAndTime.timeInMillis, DateUtils.FORMAT_SHOW_DATE)
+        date_select.text = DateUtils.formatDateTime(this, dateAndTime.timeInMillis, DateUtils.FORMAT_SHOW_DATE)
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         date = dateFormat.format(dateAndTime.time)
     }
@@ -184,7 +175,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Отображаем диалоговое окно выбора даты
      */
-    fun setDate() {
+    private fun setDate() {
         dpDialog.show()
     }
 
@@ -204,25 +195,17 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      * Инициализация элементов
      */
     private fun initialization() {
-        currentDateTime = findViewById(R.id.date_select)
-        bookTimeBegin = findViewById(R.id.book_time_begin_select)
-        bookTimeEnd = findViewById(R.id.book_time_end_select)
-        progress = findViewById(R.id.progress)
-        //bookTable = findViewById(R.id.book_button)
-        nameInput = findViewById(R.id.name_input)
-        phoneInput = findViewById(R.id.phone_input)
-        commentInput = findViewById(R.id.comment_input)
-        phoneInput.addTextChangedListener(PhoneNumberFormattingTextWatcher())
+        phone_input.addTextChangedListener(PhoneNumberFormattingTextWatcher())
 
         loaderManager = supportLoaderManager
 
-        currentDateTime.setOnClickListener(clickListener)
+        date_select.setOnClickListener(clickListener)
         book_button.setOnClickListener(clickListener)
-        bookTimeBegin.onItemSelectedListener = itemSelectedListener
-        bookTimeEnd.onItemSelectedListener = itemSelectedListener
+        book_time_begin_select.onItemSelectedListener = itemSelectedListener
+        book_time_end_select.onItemSelectedListener = itemSelectedListener
 
         adapter = ScheduleAdapter(this, ArrayList())
-        bookTimeBegin.adapter = adapter
+        book_time_begin_select.adapter = adapter
     }
 
     /**
@@ -233,8 +216,8 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         loaderManager.destroyLoader(SCHEDULE_LOADER_ID)
         progress.visibility = View.VISIBLE //Перекроем интерфейс другим лейаутом с прогресс баром
         loaderManager.initLoader(SCHEDULE_LOADER_ID, null, this@BookingActivity)
-        bookTimeBegin.isClickable = true //Активируем спиннер "От"
-        bookTimeEnd.isClickable = false //Деактивируем спиннер "До"
+        book_time_begin_select.isClickable = true //Активируем спиннер "От"
+        book_time_end_select
     }
 
     /**
@@ -258,11 +241,11 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         // Создадим адаптер для второго спиннера, если есть подходящее время
         if (schedules.size > 0) {
             val adapter = ScheduleAdapter(this@BookingActivity, schedules)
-            bookTimeEnd.adapter = adapter
-            bookTimeEnd.isClickable = true //Активируем спиннер "До"
+            book_time_end_select.adapter = adapter
+            book_time_end_select.isClickable = true //Активируем спиннер "До"
         } else {
-            bookTimeEnd.adapter = null //Сбросим адаптер, если подходящего времени для брони нет
-            bookTimeEnd.isClickable = false //Заблокируем спиннер
+            book_time_end_select.adapter = null //Сбросим адаптер, если подходящего времени для брони нет
+            book_time_end_select.isClickable = false //Заблокируем спиннер
         }
     }
 
@@ -334,9 +317,9 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     private fun buildPostRequest(): String? {
         var jsonString: String? = null
         //Проверим, что пользователь выбрал время
-        if (bookTimeBegin.selectedItemPosition >= 0 && bookTimeEnd.selectedItemPosition >= 0) {
-            val begin = bookTimeBegin.selectedItem
-            val end = bookTimeEnd.selectedItem
+        if (book_time_begin_select.selectedItemPosition >= 0 && book_time_end_select.selectedItemPosition >= 0) {
+            val begin = book_time_begin_select.selectedItem
+            val end = book_time_end_select.selectedItem
             if (begin is DaySchedule && end is DaySchedule) {
                 try {
                     val schedule = JSONObject()
@@ -392,26 +375,26 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      * Считывает поля ввода
      */
     private fun readInputField(): Boolean {
-        name = nameInput.text.toString()
+        name = name_input.text.toString()
         if (name.isEmpty()) {
-            nameInput.error = "Пожалуйста, введите имя"
+            name_input.error = "Пожалуйста, введите имя"
             return false
         } else {
             val pattern = Pattern.compile("[a-zA-Zа-яА-Я ]{1,50}")
             val matcher = pattern.matcher(name)
             if (!matcher.matches()) {
-                nameInput.error = "Имя может состоять только из букв и пробелов"
+                name_input.error = "Имя может состоять только из букв и пробелов"
                 return false
             }
         }
-        phone = phoneInput.text.toString()
+        phone = phone_input.text.toString()
         if (phone.isEmpty()) {
-            phoneInput.error = "Пожалуйста, введите номер"
+            phone_input.error = "Пожалуйста, введите номер"
             return false
         } else {
-            if (phone.length < 15) phoneInput.error = "Пожалуйста, полностью введите номер"
+            if (phone.length < 15) phone_input.error = "Пожалуйста, полностью введите номер"
         }
-        comment = commentInput.text.toString()
+        comment = comment_input.text.toString()
         return true
     }
 

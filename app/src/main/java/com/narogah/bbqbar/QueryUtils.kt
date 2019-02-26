@@ -150,8 +150,8 @@ object QueryUtils {
             // Создаем JSONObject из строки
             val baseJsonResponse = JSONObject(scheduleJSON)
             val schedule = baseJsonResponse.getJSONObject("schedule") // Берем объект schedule
-            val date = schedule.getString("date") // Берем значение поля date
-            val tableId = schedule.getInt("table_id") // Берем значения поля table_id
+            //val date = schedule.getString("date") // Берем значение поля date
+            //val tableId = schedule.getInt("table_id") // Берем значения поля table_id
 
             val scheduleArray = schedule.getJSONArray("hours") // Получаем массив hours с расписанием
 

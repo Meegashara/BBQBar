@@ -12,19 +12,11 @@ import java.util.ArrayList
 
 /**
  * Кастомный адаптер для выпадающего списка
- */
-class ScheduleAdapter
-/**
- * Конструктор для адаптера
  *
  * @param context   Контекст
- * @param schedules Список элементов расписания
+ * @param items Список элементов расписания
  */
-(context: Context,
- /**
-  * Список объектов с расписанием
-  */
- private val items: ArrayList<DaySchedule>) : ArrayAdapter<DaySchedule>(context, 0, items) {
+class ScheduleAdapter(context: Context, private val items: ArrayList<DaySchedule>) : ArrayAdapter<DaySchedule>(context, 0, items) {
 
     /**
      * Переопределяем метод для создания вьюшек активного спиннера
