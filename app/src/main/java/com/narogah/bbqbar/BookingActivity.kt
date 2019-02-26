@@ -79,6 +79,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      * Идентификатор лоадера расписания
      */
     private val SCHEDULE_LOADER_ID = 1
+
     private var dateAndTime = Calendar.getInstance()
     private lateinit var dpDialog: DatePickerDialog
     private lateinit var adapter: ScheduleAdapter
@@ -380,7 +381,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
             name_input.error = "Пожалуйста, введите имя"
             return false
         } else {
-            val pattern = Pattern.compile("[a-zA-Zа-яА-Я ]{1,50}")
+            val pattern = Pattern.compile("[a-zA-Zа-яА-ЯёЁ ]{1,50}")
             val matcher = pattern.matcher(name)
             if (!matcher.matches()) {
                 name_input.error = "Имя может состоять только из букв и пробелов"
@@ -391,8 +392,9 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         if (phone.isEmpty()) {
             phone_input.error = "Пожалуйста, введите номер"
             return false
-        } else {
-            if (phone.length < 15) phone_input.error = "Пожалуйста, полностью введите номер"
+        } else if (phone.length < 10) {
+            phone_input.error = "Пожалуйста, полностью введите номер"
+            return false
         }
         comment = comment_input.text.toString()
         return true

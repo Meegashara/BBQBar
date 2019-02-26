@@ -3,4 +3,14 @@
     <string name="booking">Бронь</string>
     <string name="schema_title">Схема столов</string>
     <string name="booking_title">Бронирование</string>
+    <string name="your_name">Ваше имя</string>
+    <string name="phone_number">Контактный номер</string>
+    <string name="date">Дата</string>
+    <string name="choose_date">Выберите дату</string>
+    <string name="time">Время</string>
+    <string name="from">от</string>
+    <string name="to">до</string>
+    <string name="comment">Комментарий (Необязательно)</string>
+    <string name="book">Забронировать</string>
+    <string name="book_for">Забронировать на:</string>
 </resources>
