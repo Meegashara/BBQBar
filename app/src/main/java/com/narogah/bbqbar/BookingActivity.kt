@@ -1,6 +1,9 @@
 package com.narogah.bbqbar
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
@@ -10,7 +13,6 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
@@ -34,8 +36,6 @@ import java.util.regex.Pattern
 
 /**
  * TODO Проверить как работает отправка POST запроса после создания сервера
- * TODO Добавить putExtra/getExtra для передачи ID столика
- * TODO Возврат на прошлый экран с результатом брони(реализовать метод returnToSchema())
  * Активити для бронирования столиков
  */
 class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<DaySchedule>> {
@@ -61,10 +61,9 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     internal var date: String = ""
 
     /**
-     * Номер столика, нужно передавать с прошлой активити
-     * Пока что ID всегда = 3
+     * Номер столика, принимается с прошлой активити
      */
-    internal var tableID = 4
+    internal var tableID = 0
 
     /**
      * Введенное имя
@@ -131,9 +130,9 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
                 R.id.book_time_begin_select -> buildBookingEndSpinner(position)
                 // Спиннер "До"
                 R.id.book_time_end_select -> {
+
                 }
-            }//String item2 = (String) parent.getItemAtPosition(position);
-            //Toast.makeText(BookingActivity.this, item2 + " 2", Toast.LENGTH_SHORT).show();
+            }
         }
 
         override fun onNothingSelected(parent: AdapterView<*>) {
@@ -146,6 +145,9 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_booking)
 
+        val extras: Bundle = intent.extras
+        tableID = extras.getInt("id")
+
         initialization()
         initDatePickerDialog()
     }
@@ -156,12 +158,18 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      */
     private fun bookTable() {
         if (!readInputField()) return
-        Log.d("TOPKEK", name)
-        Log.d("TOPKEK", phone)
-        Log.d("TOPKEK", comment)
         val jsonString = buildPostRequest()
-        if (jsonString != null) Log.d("TOPKEK", jsonString)
+        if (jsonString == null) return
         //sendPostRequest(jsonString);
+        var timeBegin: String? = null
+        var timeEnd: String? = null
+        val begin = book_time_begin_select.selectedItem
+        val end = book_time_end_select.selectedItem
+        if (begin is DaySchedule && end is DaySchedule) {
+            timeBegin = begin.bookHour
+            timeEnd = end.bookHour
+        }
+        buildAlert(timeBegin, timeEnd)
     }
 
     /**
@@ -283,7 +291,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
 
     /**
      * Отправляет JSON объект с информацией о брони на сервер
-     *
+     * TODO добработать и проверить работоспособность
      * @param jsonString строка с JSON объектом
      */
     private fun sendPostRequest(jsonString: String) {
@@ -325,6 +333,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      */
     private fun buildPostRequest(): String? {
         var jsonString: String? = null
+        //Проверим, что пользователь выбрал время
         if (bookTimeBegin.selectedItemPosition >= 0 && bookTimeEnd.selectedItemPosition >= 0) {
             val begin = bookTimeBegin.selectedItem
             val end = bookTimeEnd.selectedItem
@@ -350,15 +359,33 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
             }
         } else {
             Toast.makeText(this@BookingActivity, "Выберите время", Toast.LENGTH_SHORT).show()
+            return null
         }
         return jsonString
     }
 
     /**
-     * Возвращается на схему столов и говорит что столик забронирован
+     * Возвращается на схему столов
      */
     private fun returnToSchema() {
+        val resultIntent = Intent()
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
 
+    }
+
+    /**
+     * Строит диалоговое окно с просьбой подтвердить время брони
+     */
+    private fun buildAlert(timeBegin: String?, timeEnd: String?) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Подтверждение")
+                .setMessage("Ваш столик будет забронирован от $timeBegin до $timeEnd")
+                .setPositiveButton("Все верно") { dialog, which -> returnToSchema() }
+                .setNegativeButton("Отмена") { dialog, which -> }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     /**

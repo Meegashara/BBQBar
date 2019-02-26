@@ -1,12 +1,29 @@
 package com.narogah.bbqbar
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_schema.*
 
+/**
+ * Активити со схемой столов
+ */
 class SchemaActivity : AppCompatActivity(), View.OnClickListener {
+
+    val TABLE_1_ID: Int = 1
+    val TABLE_2_ID: Int = 2
+    val TABLE_3_ID: Int = 3
+    val TABLE_4_ID: Int = 4
+    val TABLE_5_ID: Int = 5
+    val TABLE_6_ID: Int = 6
+    val TABLE_7_ID: Int = 7
+    val TABLE_8_ID: Int = 8
+    val TABLE_9_ID: Int = 9
+    val TABLE_10_ID: Int = 10
+    val REQUEST_CODE: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +41,85 @@ class SchemaActivity : AppCompatActivity(), View.OnClickListener {
         tb10.setOnClickListener(this)
     }
 
+    /**
+     * Слушатель нажатий на столики
+     */
     override fun onClick(v: View?) {
-        val id = v?.id
-        val i = Intent(this, BookingActivity::class.java)
-        i.putExtra("id", id)
-        startActivity(i)
+        when (v?.id) {
+            R.id.tb1 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_1_ID)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+            R.id.tb2 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_2_ID)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+            R.id.tb3 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_3_ID)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+            R.id.tb4 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_4_ID)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+            R.id.tb5 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_5_ID)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+            R.id.tb6 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_6_ID)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+            R.id.tb7 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_7_ID)
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+            R.id.tb8 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_8_ID)
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+            R.id.tb9 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_9_ID)
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+            R.id.tb10 -> {
+                val intent = Intent(this, BookingActivity::class.java)
+                intent.putExtra("id", TABLE_10_ID)
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        }
+    }
+
+    /**
+     * Проверят с каким результатом завершилась работа активити брони
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                buildAlert()
+            }
+        }
+    }
+
+    /**
+     * Выводит диалоговое окно
+     */
+    private fun buildAlert() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Готово!")
+                .setMessage("Столик успешно забронирован")
+                .setPositiveButton("Ок") { dialog, which -> }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 }
