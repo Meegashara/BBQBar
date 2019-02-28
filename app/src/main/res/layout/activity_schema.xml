@@ -218,8 +218,8 @@
         app:layout_constraintVertical_bias="0.68" />
 
     <ImageView
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="45dp"
+        android:layout_height="67dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -236,8 +236,8 @@
 
     <ImageView
         android:id="@+id/imageView6"
-        android:layout_width="45dp"
-        android:layout_height="22dp"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -252,8 +252,8 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:layout_width="45dp"
-        android:layout_height="22dp"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -266,6 +266,6 @@
         app:layout_constraintHorizontal_bias="0.66"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.08" />
 
 </android.support.constraint.ConstraintLayout>
