@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,11 +25,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.31" />
 
-    <include
+    <Button
         android:id="@+id/tb1"
-        layout="@layout/table1239"
-        android:layout_width="91dp"
-        android:layout_height="54dp"
+        android:layout_width="85dp"
+        android:layout_height="55dp"
+        android:background="@drawable/table1239"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -44,11 +43,11 @@
         app:layout_constraintVertical_bias="0.88" />
 
 
-    <include
+    <Button
         android:id="@+id/tb2"
-        layout="@layout/table1239"
-        android:layout_width="91dp"
-        android:layout_height="54dp"
+        android:layout_width="85dp"
+        android:layout_height="55dp"
+        android:background="@drawable/table1239"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -61,11 +60,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.88" />
 
-    <include
+    <Button
         android:id="@+id/tb3"
-        layout="@layout/table1239"
-        android:layout_width="91dp"
-        android:layout_height="54dp"
+        android:layout_width="85dp"
+        android:layout_height="55dp"
+        android:background="@drawable/table1239"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -78,11 +77,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.68" />
 
-    <include
+    <Button
         android:id="@+id/tb4"
-        layout="@layout/table458"
-        android:layout_width="100dp"
-        android:layout_height="56dp"
+        android:layout_width="105dp"
+        android:layout_height="60dp"
+        android:background="@drawable/table45"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -93,13 +92,13 @@
         app:layout_constraintEnd_toStartOf="@+id/tb8"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48000002" />
+        app:layout_constraintVertical_bias="0.48" />
 
-    <include
+    <Button
         android:id="@+id/tb5"
-        layout="@layout/table458"
-        android:layout_width="100dp"
-        android:layout_height="56dp"
+        android:layout_width="105dp"
+        android:layout_height="60dp"
+        android:background="@drawable/table45"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -112,11 +111,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.32" />
 
-    <include
+    <Button
         android:id="@+id/tb6"
-        layout="@layout/table67"
-        android:layout_width="100dp"
-        android:layout_height="58dp"
+        android:layout_width="105dp"
+        android:layout_height="60dp"
+        android:background="@drawable/table6"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -127,13 +126,13 @@
         app:layout_constraintEnd_toStartOf="@+id/tb7"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.16000003" />
+        app:layout_constraintVertical_bias="0.16" />
 
-    <include
+    <Button
         android:id="@+id/tb7"
-        layout="@layout/table458"
-        android:layout_width="54dp"
-        android:layout_height="91dp"
+        android:layout_width="55dp"
+        android:layout_height="85dp"
+        android:background="@drawable/table7"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -145,13 +144,13 @@
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.24000001" />
+        app:layout_constraintVertical_bias="0.24" />
 
-    <include
+    <Button
         android:id="@+id/tb8"
-        layout="@layout/table67"
-        android:layout_width="54dp"
-        android:layout_height="91dp"
+        android:layout_width="55dp"
+        android:layout_height="105dp"
+        android:background="@drawable/table8"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -163,13 +162,13 @@
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48000002" />
+        app:layout_constraintVertical_bias="0.48" />
 
-    <include
+    <Button
         android:id="@+id/tb9"
-        layout="@layout/table1239"
-        android:layout_width="91dp"
-        android:layout_height="54dp"
+        android:layout_width="85dp"
+        android:layout_height="55dp"
+        android:background="@drawable/table1239"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -182,11 +181,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.56" />
 
-    <include
+    <Button
         android:id="@+id/tb10"
-        layout="@layout/table1239"
-        android:layout_width="54dp"
-        android:layout_height="91dp"
+        android:layout_width="55dp"
+        android:layout_height="85dp"
+        android:background="@drawable/table10"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
@@ -202,19 +201,21 @@
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="50dp"
-        android:layout_height="175dp"
+        android:layout_width="55dp"
+        android:layout_height="195dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/bartableio"
+        android:background="@drawable/bartable"
         app:layout_constraintBottom_toTopOf="@+id/tb9"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.68"
         app:layout_constraintStart_toEndOf="@+id/tb7"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.68" />
 
     <ImageView
         android:layout_width="35dp"

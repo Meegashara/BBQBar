@@ -342,7 +342,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
 
             }
         } else {
-            Toast.makeText(this@BookingActivity, "Выберите время", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@BookingActivity, R.string.select_time, Toast.LENGTH_SHORT).show()
             return null
         }
         return jsonString
@@ -363,10 +363,10 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      */
     private fun buildAlert(timeBegin: String?, timeEnd: String?) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Подтверждение")
+        builder.setTitle(R.string.confirmation)
                 .setMessage("Ваш столик будет забронирован от $timeBegin до $timeEnd")
-                .setPositiveButton("Все верно") { dialog, which -> returnToSchema() }
-                .setNegativeButton("Отмена") { dialog, which -> }
+                .setPositiveButton(R.string.that_is_right) { dialog, which -> returnToSchema() }
+                .setNegativeButton(R.string.cancel) { dialog, which -> }
 
         val dialog = builder.create()
         dialog.show()

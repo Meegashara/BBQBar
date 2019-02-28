@@ -14,4 +14,18 @@
     <string name="book">Забронировать</string>
     <string name="book_for">Забронировать на:</string>
     <string name="no_internet_connection">Нету доступа к сети</string>
+    <string name="select_time">Выберите время</string>
+    <string name="that_is_right">Всё верно</string>
+    <string name="cancel">Отмена</string>
+    <string name="confirmation">Подтверждение</string>
+    <string name="enter_name">Пожалуйста, введите имя</string>
+    <string name="letters_spaces.">Имя может состоять только из букв и пробелов</string>
+    <string name="pls_phone_number">Пожалуйста, введите номер телефона</string>
+    <string name="pls_full_phone_number">Пожалуйста, полностью введите номер</string>
+    <string name="busy">Занято</string>
+    <string name="free">Свободно</string>
+    <string name="done">Готово!</string>
+    <string name="success">Столик успешно забронирован</string>
+    <string name="ok">Ок</string>
+
 </resources>

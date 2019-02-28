@@ -3,9 +3,13 @@ package com.narogah.bbqbar
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.activity_schema.*
 
 /**
@@ -39,6 +43,7 @@ class SchemaActivity : AppCompatActivity(), View.OnClickListener {
         tb8.setOnClickListener(this)
         tb9.setOnClickListener(this)
         tb10.setOnClickListener(this)
+
     }
 
     /**
@@ -115,9 +120,9 @@ class SchemaActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun buildAlert() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Готово!")
-                .setMessage("Столик успешно забронирован")
-                .setPositiveButton("Ок") { dialog, which -> }
+        builder.setTitle(R.string.done)
+                .setMessage(R.string.success)
+                .setPositiveButton(R.string.ok) { dialog, which -> }
 
         val dialog = builder.create()
         dialog.show()
