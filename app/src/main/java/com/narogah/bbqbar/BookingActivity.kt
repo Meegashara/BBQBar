@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
@@ -15,15 +13,20 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast
+
+import com.narogah.bbqbar.network.NetworkService
+import com.narogah.bbqbar.network.get.Day
+import com.narogah.bbqbar.network.post.Hour
+import com.narogah.bbqbar.network.post.Schedule
+
 import kotlinx.android.synthetic.main.activity_booking.*
 
-import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 
-import java.io.DataOutputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -35,22 +38,12 @@ import java.util.regex.Pattern
  * TODO Проверить как работает отправка POST запроса после создания сервера
  * Активити для бронирования столиков
  */
-class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<DaySchedule>> {
+class BookingActivity : AppCompatActivity() {
 
     /**
      * Число дней для брони вперед
      */
     private val DAYS_FOR_BOOK_OFFSET = 14
-
-    /**
-     * Строка для гет запроса (получение данных с сервера)
-     */
-    private val GET_BASE_REQUEST = "http://4705e4cc-0c18-48f2-8a15-aa268109900f.mock.pstmn.io/?idTable=%d&date=%s"
-
-    /**
-     * Строка для пост запроса (отпрвка данных на сервер)
-     */
-    private val POST_BASE_REQUEST = ""
 
     /**
      * Дата для гет запроса
@@ -75,15 +68,11 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      */
     private var comment: String = ""
 
-    /**
-     * Идентификатор лоадера расписания
-     */
-    private val SCHEDULE_LOADER_ID = 1
-
     private var dateAndTime = Calendar.getInstance()
     private lateinit var dpDialog: DatePickerDialog
     private lateinit var adapter: ScheduleAdapter
-    private lateinit var loaderManager: LoaderManager
+
+    private lateinit var schedule: Schedule //Для ретрофита
 
 
     /**
@@ -145,14 +134,58 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     }
 
     /**
+     * Retrofit коллбек для гет метода
+     */
+    private val getCallback = object : Callback<Day> {
+        override fun onResponse(call: Call<Day>, response: Response<Day>) {
+            if (response.isSuccessful) {
+                val day = response.body()
+                val schedule = day!!.schedule
+                val hourList = schedule.hours
+                for (i in hourList.indices) {
+                    val hour = hourList[i].hour
+                    val phone = hourList[i].customerPhone
+                    val isBooked = !phone.isEmpty()
+
+                    val daySchedule = DaySchedule(isBooked, hour, i)
+                    adapter.add(daySchedule)
+                    progress.visibility = View.GONE
+                }
+            }
+        }
+
+        override fun onFailure(call: Call<Day>, t: Throwable) {
+            Toast.makeText(this@BookingActivity, "Произошла ошибка при обращении к серверу", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * TODO проверить работу на реальном сервере
+     * Retrofit коллбек для пост метода
+     */
+    private val postCallback = object : Callback<Schedule> {
+        override fun onResponse(call: Call<Schedule>, response: Response<Schedule>) {
+            if (response.isSuccessful) {
+                Log.d("TOPKEK", "Что-то отправляет")
+            } else {
+                Log.d("TOPKEK", "Не работает")
+            }
+        }
+
+        override fun onFailure(call: Call<Schedule>, t: Throwable) {
+            Log.d("TOPKEK", "Не работает совсем")
+        }
+
+
+    }
+
+    /**
      * Бронь столика
-     * Собирает JSON и отправляет POST запрос на сервер по выбранным часам
+     * Проверят поля ввода и открывает диалоговое окно для подтверждения
      */
     private fun bookTable() {
         if (!readInputField()) return
-        val jsonString = buildPostRequest()
-        if (jsonString == null) return
-        //sendPostRequest(jsonString);
+        buildPostRequest()
         var timeBegin: String? = null
         var timeEnd: String? = null
         val begin = book_time_begin_select.selectedItem
@@ -183,7 +216,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     /**
      * Инициализация диалогового окна выбора даты
      */
-    fun initDatePickerDialog() {
+    private fun initDatePickerDialog() {
         dpDialog = DatePickerDialog(this, dateSetListener,
                 dateAndTime.get(Calendar.YEAR),
                 dateAndTime.get(Calendar.MONTH),
@@ -198,8 +231,6 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     private fun initialization() {
         phone_input.addTextChangedListener(PhoneNumberFormattingTextWatcher())
 
-        loaderManager = supportLoaderManager
-
         date_select.setOnClickListener(clickListener)
         book_button.setOnClickListener(clickListener)
         book_time_begin_select.onItemSelectedListener = itemSelectedListener
@@ -210,13 +241,13 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     }
 
     /**
-     * Пересоздает loader после выбора новой даты
+     * Загружает данные после выбора новой даты
      * Перекрывает интерфейс другим лейаутом, чтобы заблокировать интерфейс на время подгрузки
      */
     private fun loadData() {
-        loaderManager.destroyLoader(SCHEDULE_LOADER_ID)
-        progress.visibility = View.VISIBLE //Перекроем интерфейс другим лейаутом с прогресс баром
-        loaderManager.initLoader(SCHEDULE_LOADER_ID, null, this@BookingActivity)
+        progress.visibility = View.VISIBLE
+        adapter.clear()
+        NetworkService.instance.jsonApi.getSchedule(tableID, date).enqueue(getCallback)
         book_time_begin_select.isClickable = true //Активируем спиннер "От"
         book_time_end_select
     }
@@ -256,7 +287,7 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
      * @param time Время ЧЧ:ММ d в строковом представлении
      * @return Время ЧЧ:ММ(+1 час) d в строковом представлении
      */
-    private fun increaseHours(time: String?): String? {
+    private fun increaseHours(time: String): String {
         var time = time
         val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         try {
@@ -274,86 +305,46 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
     }
 
     /**
-     * Отправляет JSON объект с информацией о брони на сервер
-     * TODO добработать и проверить работоспособность
-     * @param jsonString строка с JSON объектом
+     * Набивает объект Schedule данными
+     * @see Schedule
      */
-    private fun sendPostRequest(jsonString: String) {
-        val thread = Thread(Runnable {
-            try {
-                val url = URL(POST_BASE_REQUEST)
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "POST"
-                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
-                conn.setRequestProperty("Accept", "application/json")
-                conn.doOutput = true
-                conn.doInput = true
-
-
-                Log.i("JSON", jsonString)
-                val os = DataOutputStream(conn.outputStream)
-                //os.writeBytes(URLEncoder.encode(jsonString, "UTF-8"));
-                os.writeBytes(jsonString)
-
-                os.flush()
-                os.close()
-
-                Log.i("TOPKEK", conn.responseCode.toString())
-                Log.i("TOPKEK", conn.responseMessage)
-
-                conn.disconnect()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        thread.start()
-    }
-
-    /**
-     * Собирает JSON строку с информацией о брони столика
-     *
-     * @return JSON объект в строчном представлении
-     */
-    private fun buildPostRequest(): String? {
-        var jsonString: String? = null
+    private fun buildPostRequest() {
         //Проверим, что пользователь выбрал время
         if (book_time_begin_select.selectedItemPosition >= 0 && book_time_end_select.selectedItemPosition >= 0) {
             val begin = book_time_begin_select.selectedItem
             val end = book_time_end_select.selectedItem
             if (begin is DaySchedule && end is DaySchedule) {
                 try {
-                    val schedule = JSONObject()
-                            .put("date", date)
-                            .put("table_id", tableID)
-                            .put("name", name)
-                            .put("comment", comment)
-                    val hours = JSONArray()
-                    var index = 0
+                    schedule = Schedule() //Для ретрофита
+                    schedule.date = date //Для ретрофита
+                    schedule.tableId = tableID //Для ретрофита
+                    schedule.name = name //Для ретрофита
+                    schedule.comment = comment //Для ретрофита
+                    val postHours = ArrayList<Hour>() //Для ретрофита
                     for (i in begin.index..end.index) {
-                        hours.put(index, JSONObject().put("hour", adapter.getItem(i)!!.bookHour).put("customerPhone", phone))
-                        index++
+                        val postHour = Hour() //Для ретрофита
+                        postHour.hour = adapter.getItem(i).bookHour //Для ретрофита
+                        postHour.customerPhone = phone //Для ретрофита
+                        postHours.add(postHour) //Для ретрофита
                     }
-                    schedule.put("hours", hours)
-                    jsonString = schedule.toString()
+                    schedule.hours = postHours //Для ретрофита
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-
             }
         } else {
             Toast.makeText(this@BookingActivity, R.string.select_time, Toast.LENGTH_SHORT).show()
-            return null
+            return
         }
-        return jsonString
     }
 
     /**
-     * Возвращается на схему столов
+     * Отправлят данные о брони и возвращается на схему столов
      */
     private fun returnToSchema() {
         val resultIntent = Intent()
         setResult(Activity.RESULT_OK, resultIntent)
+        NetworkService.instance.jsonApi.updateSchedule(schedule).enqueue(postCallback)
         finish()
 
     }
@@ -398,23 +389,5 @@ class BookingActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<
         }
         comment = comment_input.text.toString()
         return true
-    }
-
-    override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<List<DaySchedule>> {
-        val format = String.format(Locale.getDefault(), GET_BASE_REQUEST, tableID, date)
-        return DayScheduleLoader(this, format)
-    }
-
-    override fun onLoadFinished(loader: Loader<List<DaySchedule>>, daySchedules: List<DaySchedule>?) {
-        adapter.clear() //Очистим адаптер
-        //Закинем в адаптер новые данные
-        if (daySchedules != null && !daySchedules.isEmpty()) {
-            adapter.addAll(daySchedules)
-        }
-        progress.visibility = View.GONE //Скроем лейаут
-    }
-
-    override fun onLoaderReset(loader: Loader<List<DaySchedule>>) {
-        adapter.clear()
     }
 }
