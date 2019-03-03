@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#da4d4d</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#FF4081</color>
     <color name="textColor">#FFC107</color>
     <color name="textColorHint">#FFF9C4</color>
-    <color name="isBooked">#992667</color>
-    <color name="notBooked">#88B32D</color>
+    <color name="isBooked">#FB8882</color>
+    <color name="notBooked">#74DF81</color>
 </resources>
